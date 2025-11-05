@@ -1,4 +1,6 @@
-# ply转tiff
+# 相机服务程序 - ply转tiff
+
+作为整套相机服务程序中的一部分功能实现ply-tiff转换器
 
 输入为ply文件，输出为xyz点云tiff图像和gray灰度tiff图像。
 可以选择图像的width，以width决定height

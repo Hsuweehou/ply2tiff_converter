@@ -84,6 +84,7 @@ void PlyProcessor::save_ply2tiff(std::vector<float>& x_coords, std::vector<float
         for (int col = 0; col < width; ++col) {
             int idx = row * width + col;
             cv::Vec3f& pixel = tiff_image.at<cv::Vec3f>(row, col);
+            //x与z通道是反的
             pixel[0] = x_coords[idx];  // X -> 通道2 - b
             pixel[1] = y_coords[idx];  // Y -> 通道1 - g
             pixel[2] = z_coords[idx];  // Z -> 通道0 - r

@@ -1,13 +1,22 @@
 cmake_minimum_required(VERSION 3.18)
 project(ply2tiff_converter)
 
-set(CMAKE_AUTOUIC ON)
+# set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 设置MSVC编译器使用UTF-8编码
+if(MSVC)
+    add_compile_options(/utf-8)
+    add_compile_options(/source-charset:utf-8)
+    add_compile_options(/execution-charset:utf-8)
+    # 禁用一些警告
+    add_compile_options(/wd4819)  # 禁用代码页警告
+endif()
 
 # 查找Qt5组件
 # 注意：如果CMake找不到Qt5，可以通过以下方式指定Qt路径：
@@ -42,7 +51,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(${PROJECT_NAME}
     main.cpp
     mainwindow.cpp
+    mainwindow.h
+    ui_strings.h
+    ply_tiff_converter_widget.cpp
+    ply_tiff_converter_widget.h
     ply_processor.cpp
+    ply_processor.h
     ply2tiff_converter.cpp
     resources/resources.qrc
     app.rc

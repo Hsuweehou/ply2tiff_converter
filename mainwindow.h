@@ -2,18 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPushButton>
+#include <QTreeWidget>
+#include <QStackedWidget>
 #include <QLabel>
-#include <QProgressBar>
-#include <QTextEdit>
-#include <QThread>
-#include <QFile>
-#include <QTextStream>
-#include "ply_processor.h"
-#include <vector>
-#include <string>
+#include "ply_tiff_converter_widget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,40 +20,19 @@ public:
     ~MainWindow();
 
 private slots:
-    void onBrowseButtonClicked();
-    void onStartConversionClicked();
-    void onConversionFinished();
-    void onConversionProgress(int value);
-    void appendLog(const QString& message);
-    void loadPropertyNames();
+    void onNavigationItemClicked(QTreeWidgetItem* item, int column);
 
 private:
-    // Log system
-    void initLogSystem();
-    void writeLogToFile(const QString& message);
-    QString getLogFilePath();
+    void setupUI();
+    void setupNavigation();
+    
     // UI elements
-    QLineEdit* inputFolderEdit;
-    QLineEdit* widthEdit;
-    QComboBox* grayPropertyComboBox;
-    QPushButton* browseButton;
-    QPushButton* convertButton;
-    QLabel* inputFolderLabel;
-    QLabel* widthLabel;
-    QLabel* grayPropertyLabel;
-    QProgressBar* progressBar;
-    QTextEdit* logTextEdit;
+    QTreeWidget* navigationTree;
+    QStackedWidget* contentStack;
+    QLabel* contentTitleLabel;
     
-    // Processing thread
-    QThread* processingThread;
-    PlyProcessor* processor;
-    
-    QString inputFolderPath;
-    
-    // Log system
-    QString logFolderPath;
-    QFile* logFile;
-    QTextStream* logStream;
+    // Pages
+    PlyTiffConverterWidget* plyTiffConverterPage;
 };
 
 #endif // MAINWINDOW_H
