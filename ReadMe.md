@@ -3,6 +3,8 @@
 输入为ply文件，输出为xyz点云tiff图像和gray灰度tiff图像。
 可以选择图像的width，以width决定height
 
+![本地图片](./images/ply-tiff.png "ply-tiff转换器")
+
 ## requirements
 
 

@@ -15,8 +15,11 @@ class PlyProcessor : public QObject
 public:
     explicit PlyProcessor(QObject *parent = nullptr);
     
+    // 获取PLY文件的属性名称列表
+    std::vector<std::string> getPropertyNames(const std::string& plyFilePath);
+    
 public slots:
-    void process(const std::string& inputPath, int imgWidth);
+    void process(const std::string& inputPath, int imgWidth, const std::string& grayPropertyName = "gray");
 
 signals:
     void progressUpdated(int value);
@@ -33,7 +36,7 @@ private:
     
     void getFiles_with_tail(std::string path, std::vector<std::string>& files, std::vector<std::string>& file_name, const char* sType);
     
-    int save_tiff(const std::string& filename, const std::string& ply_tiff, const std::string& gray_tiff, int img_width);
+    int save_tiff(const std::string& filename, const std::string& ply_tiff, const std::string& gray_tiff, int img_width, const std::string& grayPropertyName);
     
     bool create_directory_recursive(const std::string& path);
 };

@@ -152,6 +152,7 @@ int save_tiff(const std::string& filename, const std::string& ply_tiff, const st
         happly::PLYData test(ply_file_paths[i]);
         std::vector<std::array<double, 3>> read_ply = test.getVertexPositions();
         //std::vector<uint8_t> read_gray = test.getVertexColors();
+
         std::vector<uint8_t> read_gray = test.getElement("vertex").getProperty<uint8_t>("gray");
         //std::wcout << read_gray.size() << "\n";
         for (int j = 0; j < read_ply.size(); j++) {

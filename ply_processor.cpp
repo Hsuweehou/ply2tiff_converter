@@ -13,7 +13,22 @@ PlyProcessor::PlyProcessor(QObject *parent)
 {
 }
 
-void PlyProcessor::process(const std::string& inputPath, int imgWidth)
+std::vector<std::string> PlyProcessor::getPropertyNames(const std::string& plyFilePath)
+{
+    std::vector<std::string> properties;
+    try {
+        happly::PLYData test(plyFilePath);
+        happly::Element& vertexElement = test.getElement("vertex");
+        properties = vertexElement.getPropertyNames();
+    }
+    catch (const std::exception& e) {
+        // 如果读取失败，返回空列表
+        properties.clear();
+    }
+    return properties;
+}
+
+void PlyProcessor::process(const std::string& inputPath, int imgWidth, const std::string& grayPropertyName)
 {
     emit logMessage("开始处理路径: " + QString::fromStdString(inputPath));
     emit logMessage("图像宽度设置为: " + QString::number(imgWidth));
@@ -50,7 +65,7 @@ void PlyProcessor::process(const std::string& inputPath, int imgWidth)
     
     for (int j = 0; j < ply_file_paths.size(); j++) {
         emit logMessage("转换 " + QString::fromStdString(ply_files[j]) + "...");
-        save_tiff(ply_file_paths[j], output_path + "\\" + ply_files[j] + "_xyz.tiff", output_path + "\\" + ply_files[j] + "_gray.tiff", imgWidth);
+        save_tiff(ply_file_paths[j], output_path + "\\" + ply_files[j] + "_xyz.tiff", output_path + "\\" + ply_files[j] + "_gray.tiff", imgWidth, grayPropertyName);
         
         // 更新进度
         int progress = 10 + (j + 1) * 90 / std::max(1, (int)ply_file_paths.size());
@@ -145,7 +160,7 @@ void PlyProcessor::getFiles_with_tail(std::string path, std::vector<std::string>
     }
 }
 
-int PlyProcessor::save_tiff(const std::string& filename, const std::string& ply_tiff, const std::string& gray_tiff, int img_width) {
+int PlyProcessor::save_tiff(const std::string& filename, const std::string& ply_tiff, const std::string& gray_tiff, int img_width, const std::string& grayPropertyName) {
     emit logMessage("保存TIFF文件...");
 
     std::vector<std::vector<cv::Point3f>> plys;
@@ -167,7 +182,20 @@ int PlyProcessor::save_tiff(const std::string& filename, const std::string& ply_
     for (int i = 0; i < ply_file_paths.size(); i++) {
         happly::PLYData test(ply_file_paths[i]);
         std::vector<std::array<double, 3>> read_ply = test.getVertexPositions();
-        std::vector<uint8_t> read_gray = test.getElement("vertex").getProperty<uint8_t>("gray");
+        happly::Element& vertexElement = test.getElement("vertex");
+        // 获取所有属性名称
+        std::vector<std::string> allProperties = vertexElement.getPropertyNames();
+
+        // 打印所有属性
+        for (const std::string& propName : allProperties) {
+            //std::cout << "Found property: " << propName << std::endl;
+            emit logMessage("找到property: " + QString::fromStdString(propName));
+        }
+        
+        std::vector<uint8_t> read_gray = test.getElement("vertex").getProperty<uint8_t>(grayPropertyName);
+        emit logMessage("传入property: " + QString::fromStdString(grayPropertyName));
+        /*emit logMessage("read_gray size: " + QString::number(read_gray.size()));
+        emit logMessage("read_ply size: " + QString::number(read_ply.size()));*/
         for (int j = 0; j < read_ply.size(); j++) {
             if (img_width == 3200) {
                 cv::Point3f p(0, 0, 0);
@@ -199,7 +227,7 @@ int PlyProcessor::save_tiff(const std::string& filename, const std::string& ply_
         }
         emit logMessage("处理了 " + QString::number(plys[i].size()) + " 个点");
     }
-    
+    //emit logMessage("++++++++++++++++++++++");
     // 分别获取
     for (int k = 0; k < ply_file_paths.size(); k++) {
         for (int i = 0; i < plys[k].size(); i++) {
@@ -209,7 +237,7 @@ int PlyProcessor::save_tiff(const std::string& filename, const std::string& ply_
                 grays_elem.push_back(grays[k][i]);
         }
     }
-
+    //emit logMessage("++++++++++++++++++++++");
     save_ply2tiff(plys_x, plys_y, plys_z, img_width, plys_z.size() / img_width / 2, ply_tiff);
     save_gray2tiff(grays_elem, img_width, plys_z.size() / img_width / 2, gray_tiff);
 

@@ -44,6 +44,8 @@ add_executable(${PROJECT_NAME}
     mainwindow.cpp
     ply_processor.cpp
     ply2tiff_converter.cpp
+    resources/resources.qrc
+    app.rc
 )
 
 # 链接Qt库
