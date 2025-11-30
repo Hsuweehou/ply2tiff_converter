@@ -1,7 +1,11 @@
 # ply转tiff
 
+该工具可以用于线扫相机与面阵相机
+
 输入为ply文件，输出为xyz点云tiff图像和gray灰度tiff图像。
-可以选择图像的width，以width决定height
+线扫相机可以选择图像的width，以width决定height。
+面阵相机则需要选择输出的tiff图像的width和height。
+
 
 ![本地图片](./images/ply-tiff.png "ply-tiff转换器")
 

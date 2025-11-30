@@ -1,3 +1,17 @@
+/**
+ * @file ply2tiff_converter.cpp
+ * @brief L系列线扫相机 PLY 到 TIFF 转换器
+ * 
+ * 该模块用于处理L系列线扫相机的点云数据转换：
+ * - 支持固定宽度的点云数据转换（如3200像素宽度）
+ * - 支持自定义灰度属性选择（从PLY文件属性中选择）
+ * - 支持通道顺序选择（OpenCV格式 ZYX 或 Open3D格式 XYZ）
+ * - 输出 CV_32FC3 格式的 XYZ 坐标 TIFF 图像
+ * - 输出 CV_8UC1 格式的单通道灰度 TIFF 图像
+ * 
+ * 注意：此转换器假设点云数据是有序结构，按固定宽度排列
+ */
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -11,7 +25,7 @@
 #include <unordered_map>
 #include <functional>
 #include <chrono>   //计算时间
-#include "../include/happly.h"
+#include "happly.h"
 
 //namespace ply2tiff_converter {
 
